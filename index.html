@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vínculos Admin</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#0f1010;color:#fff;min-height:100vh;display:flex;flex-direction:column}
+
+.topbar{background:#141616;border-bottom:1px solid #1e2020;padding:.85rem 1.5rem;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100}
+.logo{width:36px;height:36px;border-radius:10px;background:#0d1f0d;border:1.5px solid #25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(37,211,102,0.15)}
+.logo i{font-size:18px;color:#25D366}
+.topbar-title{font-size:14px;font-weight:700;color:#f0f0f0;letter-spacing:-.2px}
+.topbar-sub{font-size:10px;color:#2a2e2e;margin-top:1px}
+.pill-green{margin-left:auto;font-size:10px;padding:5px 12px;border-radius:20px;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.3);color:#25D366;font-weight:600;display:flex;align-items:center;gap:6px}
+.pill-dot{width:6px;height:6px;border-radius:50%;background:#25D366;box-shadow:0 0 6px rgba(37,211,102,0.6)}
+
+.body{display:flex;flex:1}
+.sidebar{width:210px;background:#111313;border-right:1px solid #1a1c1c;padding:1.25rem 0;flex-shrink:0;position:sticky;top:55px;height:calc(100vh - 55px);overflow-y:auto}
+.nav-section{font-size:9px;color:#1e2222;text-transform:uppercase;letter-spacing:1.4px;padding:12px 18px 5px;font-weight:700}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 18px;font-size:12px;color:#2a2e2e;cursor:pointer;transition:all .15s;border-left:2px solid transparent}
+.nav-item i{font-size:16px}
+.nav-item:hover{color:#6a7070;background:#131515}
+.nav-item.active{color:#e8f0e8;border-left-color:#25D366;background:#131515}
+.nav-item .badge{margin-left:auto;background:rgba(37,211,102,0.12);border:1px solid rgba(37,211,102,0.25);color:#25D366;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700}
+
+.main{flex:1;padding:1.75rem;overflow:auto;background:#0f1010}
+.page-title{font-size:15px;font-weight:700;color:#f0f0f0;margin-bottom:3px;letter-spacing:-.2px}
+.page-sub{font-size:11px;color:#2a2e2e;margin-bottom:1.75rem}
+
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.75rem}
+.stat-card{background:#141616;border:1px solid #1e2020;border-radius:14px;padding:1.1rem}
+.stat-label{font-size:9px;color:#2a2e2e;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin-bottom:8px}
+.stat-value{font-size:26px;font-weight:700;color:#fff;letter-spacing:-.5px}
+.stat-value.green{color:#25D366}
+.stat-sub{font-size:10px;color:#222626;margin-top:4px}
+
+.section-label{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:#222626;font-weight:700;margin-bottom:12px}
+
+/* CLIENTES CARDS */
+.clientes-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.75rem}
+.cliente-card{background:#141616;border:1px solid #1e2020;border-radius:16px;padding:1.1rem;cursor:pointer;transition:border-color .2s;position:relative}
+.cliente-card:hover{border-color:#2a2e2e}
+.cliente-card.online{border-left:3px solid #25D366}
+.cliente-card.suspendido{opacity:.45}
+.cliente-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.avatar{width:40px;height:40px;border-radius:50%;background:#1a1c1c;border:1px solid #222626;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#3a3e3e;flex-shrink:0}
+.avatar.online{border-color:#25D366;color:#25D366;background:#0d1a0d}
+.c-nombre{font-size:13px;font-weight:600;color:#e0e8e0}
+.c-num{font-size:10px;color:#2a2e2e;margin-top:2px}
+.bot-status-row{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.bdot{width:7px;height:7px;border-radius:50%;background:#1e2020;flex-shrink:0}
+.bdot.on{background:#25D366;box-shadow:0 0 6px rgba(37,211,102,0.5)}
+.bstxt{font-size:10px;color:#2a2e2e}
+.bstxt.on{color:#25D366;font-weight:500}
+.msg-prev{font-size:11px;color:#222626;line-height:1.4;border-left:2px solid #1e2020;padding-left:8px;margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msg-prev.unread{border-left-color:#25D366;color:#4a5050}
+.c-footer{display:flex;align-items:center;justify-content:space-between}
+.new-badge{font-size:9px;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.2);color:#25D366;padding:2px 8px;border-radius:10px;font-weight:700}
+.c-time{font-size:9px;color:#1e2222}
+.c-actions{display:flex;gap:5px;margin-top:10px;padding-top:10px;border-top:1px solid #1a1c1c}
+.btn-sm{padding:5px 10px;border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;border:1px solid #1e2020;background:#111313;color:#3a3e3e;font-family:'Inter',sans-serif;transition:all .15s;display:flex;align-items:center;gap:4px}
+.btn-sm:hover{border-color:#3a3e3e;color:#8a9090}
+.btn-sm.green:hover{border-color:#25D366;color:#25D366;background:rgba(37,211,102,0.05)}
+.btn-sm.red:hover{border-color:#ff5050;color:#ff5050;background:rgba(255,80,80,0.05)}
+.btn-sm i{font-size:12px}
+
+/* LISTA (vista clientes) */
+.clientes-list{display:flex;flex-direction:column;gap:8px}
+.cliente-row{background:#141616;border:1px solid #1e2020;border-radius:12px;padding:1rem;display:flex;align-items:center;gap:12px;transition:border-color .2s}
+.cliente-row:hover{border-color:#2a2e2e}
+.cliente-row.online{border-left:3px solid #25D366}
+.cliente-row.suspendido{opacity:.45}
+.cliente-info{flex:1;min-width:0}
+.cliente-nombre{font-size:12px;font-weight:600;color:#e0e8e0}
+.cliente-det{font-size:10px;color:#2a2e2e;margin-top:2px}
+.status-badge{font-size:9px;padding:2px 8px;border-radius:10px;font-weight:700;flex-shrink:0}
+.status-badge.on{background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.25);color:#25D366}
+.status-badge.off{background:#141616;border:1px solid #1e2020;color:#2a2e2e}
+.status-badge.sus{background:rgba(255,80,80,0.08);border:1px solid rgba(255,80,80,0.2);color:#ff5050}
+.row-actions{display:flex;gap:5px;flex-shrink:0}
+
+/* ADD BTN */
+.add-btn{width:100%;padding:.9rem;border-radius:14px;border:1px solid #1e2020;background:#111313;color:#2a2e2e;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+.add-btn:hover{border-color:#25D366;color:#25D366}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:center;justify-content:center}
+.overlay.show{display:flex}
+.modal{background:#141616;border:1px solid #222626;border-radius:18px;padding:1.75rem;width:460px;max-width:95vw}
+.modal-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:4px}
+.modal-sub{font-size:11px;color:#2a2e2e;margin-bottom:1.5rem}
+.field-label{font-size:10px;color:#3a3e3e;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+input[type=text],textarea,select{width:100%;background:#0f1010;border:1px solid #1e2020;border-radius:10px;padding:10px 13px;color:#e0e8e0;font-size:12px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s;resize:vertical}
+input[type=text]:focus,textarea:focus{border-color:#25D366}
+textarea{min-height:80px}
+.field-wrap{margin-bottom:14px}
+.modal-footer{display:flex;gap:8px;margin-top:1.5rem}
+.btn-primary{flex:1;padding:.85rem;border-radius:10px;border:1px solid #25D366;background:rgba(37,211,102,0.1);color:#25D366;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-primary:hover{background:rgba(37,211,102,0.18)}
+.btn-cancel{padding:.85rem 1rem;border-radius:10px;border:1px solid #1e2020;background:#111313;color:#3a3e3e;font-family:'Inter',sans-serif;font-size:12px;cursor:pointer}
+
+/* QR */
+.qr-wrap{text-align:center;padding:1.25rem 0}
+.qr-wrap img{width:210px;height:210px;border-radius:12px;border:2px solid #1e2020}
+.qr-instruccion{font-size:11px;color:#3a3e3e;margin-top:12px;line-height:1.7}
+
+/* MSGS */
+.msg-list{display:flex;flex-direction:column;gap:8px;max-height:420px;overflow-y:auto;padding-right:4px}
+.msg-item{display:flex;gap:8px;align-items:flex-end}
+.msg-item.salida{flex-direction:row-reverse}
+.msg-bubble{background:#1a1c1c;border:1px solid #1e2020;border-radius:12px 12px 12px 4px;padding:9px 13px;max-width:72%}
+.msg-item.salida .msg-bubble{background:#0d1f0d;border-color:rgba(37,211,102,0.2);border-radius:12px 12px 4px 12px}
+.msg-texto{font-size:12px;color:#c0c8c0;line-height:1.55}
+.msg-meta{display:flex;align-items:center;gap:6px;margin-top:5px}
+.msg-time{font-size:9px;color:#2a2e2e}
+.msg-ia{font-size:9px;color:#25D366;font-weight:600}
+
+.spinner{width:22px;height:22px;border:2px solid #1e2020;border-top-color:#25D366;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.divider{height:1px;background:#1a1c1c;margin:1.25rem 0}
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:#e8f0e8;color:#0f1010;padding:10px 18px;border-radius:12px;font-size:12px;font-weight:700;display:none;z-index:999}
+.view{display:none}
+.view.active{display:block}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo"><i class="ti ti-brand-whatsapp"></i></div>
+  <div><div class="topbar-title">Vínculos Admin</div><div class="topbar-sub">Panel de administración · Vínculos.IA</div></div>
+  <span class="pill-green" id="pill-activos"><span class="pill-dot"></span> Cargando...</span>
+</div>
+
+<div class="body">
+  <div class="sidebar">
+    <div class="nav-section">Panel</div>
+    <div class="nav-item active" id="nav-dashboard" onclick="showView('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard <span class="badge" id="badge-activos">0</span></div>
+    <div class="nav-item" id="nav-clientes" onclick="showView('clientes',this)"><i class="ti ti-users"></i> Clientes</div>
+    <div class="nav-item" id="nav-mensajes" onclick="showView('mensajes',this)"><i class="ti ti-message-circle"></i> Mensajes</div>
+    <div class="nav-section">Gestión</div>
+    <div class="nav-item" onclick="showView('clientes',document.getElementById('nav-clientes'));abrirModalNuevo()"><i class="ti ti-qrcode"></i> Conectar QR</div>
+    <div class="nav-item" id="nav-stats" onclick="showView('stats',this)"><i class="ti ti-chart-bar"></i> Estadísticas</div>
+  </div>
+
+  <div class="main">
+
+    <!-- DASHBOARD -->
+    <div class="view active" id="view-dashboard">
+      <div class="page-title">Dashboard</div>
+      <div class="page-sub">Vista general de todos los bots activos</div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-label">Bots activos</div><div class="stat-value green" id="stat-activos">—</div><div class="stat-sub">en línea ahora</div></div>
+        <div class="stat-card"><div class="stat-label">Total clientes</div><div class="stat-value" id="stat-total">—</div><div class="stat-sub">registrados</div></div>
+        <div class="stat-card"><div class="stat-label">Suspendidos</div><div class="stat-value" id="stat-sus">—</div><div class="stat-sub">sin servicio</div></div>
+        <div class="stat-card"><div class="stat-label">Servidor</div><div class="stat-value green" style="font-size:13px;margin-top:6px">✓ Online</div><div class="stat-sub">Vínculos.IA</div></div>
+      </div>
+      <div class="section-label">Clientes</div>
+      <div class="clientes-grid" id="dash-clientes"></div>
+      <button class="add-btn" onclick="showView('clientes',document.getElementById('nav-clientes'));abrirModalNuevo()"><i class="ti ti-plus"></i> Agregar nuevo cliente</button>
+    </div>
+
+    <!-- CLIENTES -->
+    <div class="view" id="view-clientes">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem">
+        <div><div class="page-title">Clientes</div><div class="page-sub">Gestiona todos tus clientes y sus bots</div></div>
+        <button class="btn-sm green" onclick="abrirModalNuevo()" style="padding:7px 14px;font-size:11px"><i class="ti ti-plus"></i> Nuevo cliente</button>
+      </div>
+      <div class="clientes-list" id="lista-clientes"></div>
+    </div>
+
+    <!-- MENSAJES -->
+    <div class="view" id="view-mensajes">
+      <div class="page-title">Conversaciones</div>
+      <div class="page-sub">Selecciona un cliente para ver sus mensajes</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem" id="btns-clientes-msgs"></div>
+      <div style="background:#141616;border:1px solid #1e2020;border-radius:14px;padding:1.25rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <span style="font-size:9px;color:#3a3e3e;text-transform:uppercase;letter-spacing:1.5px;font-weight:700" id="msg-cliente-nombre">Sin selección</span>
+        </div>
+        <div class="msg-list" id="msg-list"><p style="font-size:11px;color:#222626;text-align:center;padding:2rem">Selecciona un cliente arriba</p></div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="view" id="view-stats">
+      <div class="page-title">Estadísticas</div>
+      <div class="page-sub">Rendimiento de cada bot</div>
+      <div id="stats-clientes"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL NUEVO CLIENTE -->
+<div class="overlay" id="modal-nuevo">
+  <div class="modal">
+    <div class="modal-title">Nuevo cliente</div>
+    <div class="modal-sub">Registra un nuevo cliente en Vínculos.IA</div>
+    <div class="field-wrap"><div class="field-label">Nombre de la empresa</div><input type="text" id="nuevo-nombre" placeholder="Ej: Moda Urbana S.A.S"></div>
+    <div class="field-wrap"><div class="field-label">Teléfono WhatsApp</div><input type="text" id="nuevo-telefono" placeholder="+57 300 000 0000"></div>
+    <div class="field-wrap"><div class="field-label">Tipo de negocio</div><input type="text" id="nuevo-negocio" placeholder="Ej: Tienda de ropa"></div>
+    <div class="field-wrap"><div class="field-label">Instrucciones para la IA</div><textarea id="nuevo-prompt" placeholder="Ej: Eres el asistente de Moda Urbana. Responde sobre productos, horarios y precios de forma amable y breve."></textarea></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="cerrarModal('modal-nuevo')">Cancelar</button>
+      <button class="btn-primary" onclick="crearCliente()"><i class="ti ti-check"></i> Crear cliente</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL QR -->
+<div class="overlay" id="modal-qr">
+  <div class="modal">
+    <div class="modal-title">Conectar WhatsApp</div>
+    <div class="modal-sub" id="qr-cliente-nombre">Escanea el QR con el WhatsApp del cliente</div>
+    <div class="qr-wrap" id="qr-contenido"><div class="spinner"></div><p style="font-size:11px;color:#2a2e2e;margin-top:12px">Generando QR...</p></div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="cerrarModal('modal-qr')">Cerrar</button></div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR -->
+<div class="overlay" id="modal-editar">
+  <div class="modal">
+    <div class="modal-title">Editar cliente</div>
+    <div class="modal-sub">Modifica los datos e instrucciones de la IA</div>
+    <input type="hidden" id="editar-id">
+    <div class="field-wrap"><div class="field-label">Nombre</div><input type="text" id="editar-nombre"></div>
+    <div class="field-wrap"><div class="field-label">Teléfono</div><input type="text" id="editar-telefono"></div>
+    <div class="field-wrap"><div class="field-label">Negocio</div><input type="text" id="editar-negocio"></div>
+    <div class="field-wrap"><div class="field-label">Instrucciones IA</div><textarea id="editar-prompt"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="cerrarModal('modal-editar')">Cancelar</button>
+      <button class="btn-primary" onclick="guardarEdicion()">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SERVER='https://vinculosia-server.onrender.com';
+let clientes=[];
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',3000)}
+function cerrarModal(id){document.getElementById(id).classList.remove('show')}
+function abrirModal(id){document.getElementById(id).classList.add('show')}
+
+function showView(v,el){
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  if(el) el.classList.add('active');
+  if(v==='mensajes') renderBtnsClientes();
+  if(v==='stats') cargarStats();
+}
+
+async function cargarClientes(){
+  try{
+    const res=await fetch(SERVER+'/clientes');
+    const data=await res.json();
+    if(data.ok){clientes=data.clientes;renderDashboard();renderClientes();}
+  }catch(e){toast('Error conectando al servidor')}
+}
+
+function initials(n){return(n||'?').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase()}
+
+function renderDashboard(){
+  const activos=clientes.filter(c=>c.bot_activo).length;
+  const sus=clientes.filter(c=>c.suspendido).length;
+  document.getElementById('stat-activos').textContent=activos;
+  document.getElementById('stat-total').textContent=clientes.length;
+  document.getElementById('stat-sus').textContent=sus;
+  document.getElementById('badge-activos').textContent=activos;
+  document.getElementById('pill-activos').innerHTML='<span class="pill-dot"></span> '+activos+' bots activos';
+  const cont=document.getElementById('dash-clientes');
+  cont.innerHTML=clientes.map(c=>{
+    const ini=initials(c.nombre);
+    const on=c.bot_activo&&!c.suspendido;
+    return `<div class="cliente-card ${on?'online':''} ${c.suspendido?'suspendido':''}">
+      <div class="cliente-top">
+        <div class="avatar ${on?'online':''}">${ini}</div>
+        <div><div class="c-nombre">${c.nombre}</div><div class="c-num">${c.telefono||'Sin teléfono'}</div></div>
+      </div>
+      <div class="bot-status-row"><div class="bdot ${on?'on':''}"></div><span class="bstxt ${on?'on':''}">${c.suspendido?'Suspendido':on?'Bot activo · en línea':'Bot inactivo · sin QR'}</span></div>
+      <div class="msg-prev">${c.negocio||'Sin negocio registrado'}</div>
+      <div class="c-actions">
+        <button class="btn-sm green" onclick="conectarQR('${c.id}','${c.nombre}')"><i class="ti ti-qrcode"></i> QR</button>
+        <button class="btn-sm" onclick="abrirEditar('${c.id}')"><i class="ti ti-pencil"></i></button>
+        <button class="btn-sm" onclick="verMensajes('${c.id}','${c.nombre}')"><i class="ti ti-message"></i></button>
+        ${c.suspendido
+          ?`<button class="btn-sm green" onclick="reactivar('${c.id}','${c.nombre}')"><i class="ti ti-player-play"></i> Reactivar</button>`
+          :`<button class="btn-sm red" onclick="suspender('${c.id}','${c.nombre}')"><i class="ti ti-ban"></i> Suspender</button>`
+        }
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderClientes(){
+  const cont=document.getElementById('lista-clientes');
+  if(!clientes.length){cont.innerHTML='<p style="font-size:11px;color:#222626;text-align:center;padding:2rem">Sin clientes. Agrega el primero.</p>';return}
+  cont.innerHTML=clientes.map(c=>{
+    const ini=initials(c.nombre);
+    const on=c.bot_activo&&!c.suspendido;
+    const badge=c.suspendido?'<span class="status-badge sus">Suspendido</span>':on?'<span class="status-badge on">● Activo</span>':'<span class="status-badge off">Sin QR</span>';
+    return `<div class="cliente-row ${on?'online':''} ${c.suspendido?'suspendido':''}">
+      <div class="avatar ${on?'online':''}">${ini}</div>
+      <div class="cliente-info"><div class="cliente-nombre">${c.nombre}</div><div class="cliente-det">${c.telefono||'Sin teléfono'} · ${c.negocio||'Sin negocio'}</div></div>
+      ${badge}
+      <div class="row-actions">
+        <button class="btn-sm green" onclick="conectarQR('${c.id}','${c.nombre}')" title="Conectar QR"><i class="ti ti-qrcode"></i></button>
+        <button class="btn-sm" onclick="abrirEditar('${c.id}')" title="Editar"><i class="ti ti-pencil"></i></button>
+        <button class="btn-sm" onclick="verMensajes('${c.id}','${c.nombre}')" title="Ver mensajes"><i class="ti ti-message"></i></button>
+        ${c.suspendido
+          ?`<button class="btn-sm green" onclick="reactivar('${c.id}','${c.nombre}')" title="Reactivar"><i class="ti ti-player-play"></i></button>`
+          :`<button class="btn-sm red" onclick="suspender('${c.id}','${c.nombre}')" title="Suspender"><i class="ti ti-ban"></i></button>`
+        }
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function abrirModalNuevo(){
+  ['nuevo-nombre','nuevo-telefono','nuevo-negocio','nuevo-prompt'].forEach(id=>document.getElementById(id).value='');
+  abrirModal('modal-nuevo');
+}
+
+async function crearCliente(){
+  const nombre=document.getElementById('nuevo-nombre').value.trim();
+  const telefono=document.getElementById('nuevo-telefono').value.trim();
+  const negocio=document.getElementById('nuevo-negocio').value.trim();
+  const prompt_ia=document.getElementById('nuevo-prompt').value.trim();
+  if(!nombre){toast('Escribe el nombre del cliente');return}
+  try{
+    const res=await fetch(SERVER+'/clientes',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre,telefono,negocio,prompt_ia})});
+    const data=await res.json();
+    if(data.ok){cerrarModal('modal-nuevo');cargarClientes();toast('Cliente creado: '+nombre)}
+  }catch(e){toast('Error creando cliente')}
+}
+
+function abrirEditar(id){
+  const c=clientes.find(x=>x.id===id);if(!c)return;
+  document.getElementById('editar-id').value=c.id;
+  document.getElementById('editar-nombre').value=c.nombre||'';
+  document.getElementById('editar-telefono').value=c.telefono||'';
+  document.getElementById('editar-negocio').value=c.negocio||'';
+  document.getElementById('editar-prompt').value=c.prompt_ia||'';
+  abrirModal('modal-editar');
+}
+
+async function guardarEdicion(){
+  const id=document.getElementById('editar-id').value;
+  const body={nombre:document.getElementById('editar-nombre').value,telefono:document.getElementById('editar-telefono').value,negocio:document.getElementById('editar-negocio').value,prompt_ia:document.getElementById('editar-prompt').value};
+  try{
+    const res=await fetch(SERVER+'/clientes/'+id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const data=await res.json();
+    if(data.ok){cerrarModal('modal-editar');cargarClientes();toast('Cliente actualizado')}
+  }catch(e){toast('Error actualizando')}
+}
+
+async function conectarQR(id,nombre){
+  document.getElementById('qr-cliente-nombre').textContent='Conectando WhatsApp de '+nombre;
+  document.getElementById('qr-contenido').innerHTML='<div class="spinner"></div><p style="font-size:11px;color:#2a2e2e;margin-top:12px">Generando QR para '+nombre+'...</p>';
+  abrirModal('modal-qr');
+  try{
+    const res=await fetch(SERVER+'/conectar/'+id,{method:'POST'});
+    const data=await res.json();
+    if(data.conectado){document.getElementById('qr-contenido').innerHTML='<div style="font-size:48px;text-align:center">✅</div><p style="font-size:12px;color:#25D366;text-align:center;margin-top:10px;font-weight:700">¡Ya está conectado!</p>';cargarClientes()}
+    else if(data.qr){document.getElementById('qr-contenido').innerHTML='<img src="'+data.qr+'" alt="QR WhatsApp"><div class="qr-instruccion">Abre WhatsApp en el teléfono del cliente<br>→ Dispositivos vinculados → Vincular dispositivo<br>→ Escanea este QR</div>';setTimeout(()=>cargarClientes(),20000)}
+    else{document.getElementById('qr-contenido').innerHTML='<p style="font-size:11px;color:#ff5050;text-align:center">Error: '+(data.error||'No se pudo generar QR')+'</p>'}
+  }catch(e){document.getElementById('qr-contenido').innerHTML='<p style="font-size:11px;color:#ff5050;text-align:center">Error conectando al servidor</p>'}
+}
+
+async function suspender(id,nombre){
+  if(!confirm('¿Suspender bot de '+nombre+'?\nDejará de responder mensajes de WhatsApp.'))return;
+  try{
+    const res=await fetch(SERVER+'/clientes/'+id+'/suspender',{method:'POST'});
+    const data=await res.json();
+    if(data.ok){cargarClientes();toast('Bot suspendido: '+nombre)}
+  }catch(e){toast('Error suspendiendo')}
+}
+
+async function reactivar(id,nombre){
+  try{
+    const res=await fetch(SERVER+'/clientes/'+id+'/reactivar',{method:'POST'});
+    const data=await res.json();
+    if(data.ok){cargarClientes();toast('Cliente reactivado: '+nombre)}
+  }catch(e){toast('Error reactivando')}
+}
+
+function renderBtnsClientes(){
+  document.getElementById('btns-clientes-msgs').innerHTML=clientes.map(c=>`<button class="btn-sm" onclick="verMensajes('${c.id}','${c.nombre}')" style="padding:6px 14px">${c.nombre}</button>`).join('');
+}
+
+async function verMensajes(id,nombre){
+  showView('mensajes',document.getElementById('nav-mensajes'));
+  document.getElementById('msg-cliente-nombre').textContent=nombre;
+  document.getElementById('msg-list').innerHTML='<div class="spinner"></div>';
+  try{
+    const res=await fetch(SERVER+'/mensajes/'+id+'?limit=50');
+    const data=await res.json();
+    if(data.ok){
+      const msgs=data.mensajes.reverse();
+      if(!msgs.length){document.getElementById('msg-list').innerHTML='<p style="font-size:11px;color:#222626;text-align:center;padding:2rem">Sin mensajes aún</p>';return}
+      document.getElementById('msg-list').innerHTML=msgs.map(m=>`
+        <div class="msg-item ${m.direccion}">
+          <div class="msg-bubble">
+            <div class="msg-texto">${m.mensaje}</div>
+            <div class="msg-meta">
+              <span class="msg-time">${new Date(m.created_at).toLocaleString('es-CO',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'})}</span>
+              ${m.respondido_ia?'<span class="msg-ia">● IA</span>':''}
+            </div>
+          </div>
+        </div>`).join('');
+      const ml=document.getElementById('msg-list');ml.scrollTop=ml.scrollHeight;
+    }
+  }catch(e){document.getElementById('msg-list').innerHTML='<p style="font-size:11px;color:#ff5050;text-align:center">Error cargando mensajes</p>'}
+}
+
+async function cargarStats(){
+  const cont=document.getElementById('stats-clientes');
+  cont.innerHTML='<div class="spinner"></div>';
+  const html=[];
+  for(const c of clientes){
+    try{
+      const res=await fetch(SERVER+'/stats/'+c.id);
+      const data=await res.json();
+      if(data.ok){
+        const s=data.stats;
+        html.push(`<div style="background:#141616;border:1px solid #1e2020;border-radius:14px;padding:1.1rem;margin-bottom:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <span style="font-size:12px;font-weight:600;color:#e0e8e0">${c.nombre}</span>
+            <span style="font-size:10px;color:${c.bot_activo?'#25D366':'#2a2e2e'}">${c.bot_activo?'● Activo':'Sin conexión'}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+            <div><div style="font-size:9px;color:#2a2e2e;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Mensajes hoy</div><div style="font-size:22px;font-weight:700;color:#fff">${s.hoy}</div></div>
+            <div><div style="font-size:9px;color:#2a2e2e;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Total mensajes</div><div style="font-size:22px;font-weight:700;color:#fff">${s.total}</div></div>
+            <div><div style="font-size:9px;color:#2a2e2e;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Respondidos IA</div><div style="font-size:22px;font-weight:700;color:#25D366">${s.porcentaje_ia}%</div></div>
+          </div>
+        </div>`);
+      }
+    }catch(e){}
+  }
+  cont.innerHTML=html.join('')||'<p style="font-size:11px;color:#222626;text-align:center;padding:2rem">Sin datos aún</p>';
+}
+
+document.querySelectorAll('.overlay').forEach(o=>{o.addEventListener('click',function(e){if(e.target===this)this.classList.remove('show')})});
+cargarClientes();
+setInterval(cargarClientes,30000);
+</script>
+</body>
+</html>
